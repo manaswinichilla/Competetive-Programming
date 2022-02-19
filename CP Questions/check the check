@@ -1,0 +1,364 @@
+#include <iostream>
+#include <cctype>
+#include <cstdlib>
+#include <cstdio>
+using namespace std;
+
+bool checkforalldots(char chessboard[9][9])
+{
+    int row,col;
+    bool flag=true;
+    char piece;
+    for(row=0;row<8;row++)
+    {
+        for(col=0;col<8;col++)
+        {
+            piece=chessboard[row][col];
+            if(piece!='.')
+            {
+                flag=false;
+            }
+        }
+    }
+    return flag;
+}
+
+bool pawnAttack(char chessboard[9][9], int row, int col, int kingRow, int kingCol, char king)
+{
+    if(row-1>0 && col-1>=0 && chessboard[row-1][col-1]==king)
+    {
+        return true;
+    }
+    else if(row-1>=0 && col+1<8 && chessboard[row-1][col+1]==king)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool knightAttack(char chessboard[9][9], int row, int col, int kingRow, int kingCol, char king)
+{
+     if(row-2>=0 && col-1>=0 && chessboard[row-2][col-1] == king)
+     {
+        return true; 
+     }
+     else if(row-1>=0 && col-2>=0 && chessboard[row-1][col-2] == king)
+     {
+         return true;
+     }
+     else if(row+1<8 && col-2>=0 && chessboard[row+1][col-2] == king)
+     {
+         return true;
+     }
+     else if(row+2<8 && col-1>=0 && chessboard[row+2][col-1] == king)
+     {
+         return true;
+     }
+     else if(row+2<8 && col+1<8 && chessboard[row+2][col+1] == king)
+     {
+         return true;
+     }
+     else if(row+1<8 && col+2<8 && chessboard[row+1][col+2] == king)
+     {
+         return true;
+     }
+     else if(row-1>=0 && col+2<8 && chessboard[row-1][col+2] == king)
+     {
+         return true;
+     }
+     else if(row-2>=0 && col+1<8 && chessboard[row-2][col+1] == king)
+     {
+         return true;
+     }
+     else
+     {
+         return false;
+     }
+}
+bool bishopAttack(char chessboard[9][9], int row, int col, int kingRow, int kingCol, char king)
+{
+    if(abs(row-kingRow)-abs(col-kingCol)!=0)
+    {
+        return false;
+    }
+    for ( int r=row-1, c=col-1; r>=0 && c>=0; r--, c--)
+    {
+        if(chessboard[r][c]==king)
+        {
+            return true;
+        }
+        else if(isalpha(chessboard[r][c] && chessboard[r][c]!=king))
+        {
+            break;
+        }
+    }
+    for(int r=row-1, c=col+1;  r>=0 && c<8; r--, c++)
+    {
+        if(chessboard[r][c] == king)
+        {
+            return true;
+        }
+        else if(isalpha(chessboard[r][c]) && chessboard[r][c] != king)
+        {
+            break;
+        }
+    }
+    for(int r=row+1, c=col-1;  r<8 && c>=0; r++, c--)
+    {
+        if(chessboard[r][c] == king)
+        {
+            return true;
+        }
+        else if(isalpha(chessboard[r][c]) && chessboard[r][c] != king)
+        {
+            break;
+        }
+    }
+    for(int r=row+1, c=col+1;  r<8 && c<8; r++, c++)
+    {
+        if(chessboard[r][c] == king)
+        {
+            return true;
+        }
+        else if(isalpha(chessboard[r][c]) && chessboard[r][c] != king)
+        {
+            break;
+        }
+    }
+    return false;
+    
+}
+bool rookAttack(char chessboard[9][9], int row, int col, int kingRow, int kingCol, char king)
+{
+    if(row!=kingRow && col!=kingCol)
+    {
+        return false;
+    }
+    for(int r=row+1; r<8; r++)
+    {
+        if(chessboard[r][col] == king)
+        {
+            return true;
+        }
+        else if(isalpha(chessboard[r][col]) && chessboard[r][col] != king)
+        {
+            break;
+        }
+    }
+    for(int r=row-1; r>=0; r--)
+    {
+        if(chessboard[r][col] == king)
+        {
+            return true;
+        }
+        else if(isalpha(chessboard[r][col]) && chessboard[r][col] != king)
+        {
+            break;
+        }
+    }
+    for(int c=col+1; c<8; c++)
+    {
+        if(chessboard[row][c] == king)
+        {
+            return true;
+        }
+        else if(isalpha(chessboard[row][c]) && chessboard[row][c] != king)
+        {
+            break;
+        }
+    }
+    for(int c=col-1; c>=0; c--)
+    {
+        if(chessboard[row][c] == king)
+        {
+            return true;
+        }
+        else if(isalpha(chessboard[row][c]) && chessboard[row][c] != king)
+        {
+            break;
+        }
+    }
+    return false;
+}
+bool kingAttack(char chessboard[9][9], int row, int col, int kingRow, int kingCol, char king)
+{
+    if(row+1<8 && col-1 >=0 && chessboard[row+1][col-1]==king)
+    {
+        return true;
+    }
+    else if(row+1<8 && col+1<8 && chessboard[row+1][col+1]==king)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool checkForWhiteKing(char chessboard[9][9], int whiteKRow, int whiteKCol)
+{
+    int row,col;
+    char king='K';
+    bool attacked=false;
+    for(row=0; row<8; row++)
+    {
+        for(col=0;col<8;col++)
+        {
+            if(chessboard[row][col]!='.' && islower(chessboard[row][col]))
+            {
+                if(chessboard[row][col]=='p')
+                {
+                    if(kingAttack(chessboard, row, col, whiteKRow, whiteKCol, king))
+                    {
+                        attacked=true;
+                    }
+                }
+                else if(chessboard[row][col]=='n')
+                {
+                    if(knightAttack(chessboard, row, col, whiteKRow, whiteKCol, king))
+                    {
+                        attacked=true;
+                    }
+                }
+                else if(chessboard[row][col]=='b')
+                {
+                    if(bishopAttack(chessboard, row, col, whiteKRow, whiteKCol, king))
+                    {
+                        attacked=true;
+                    }
+                }
+                else if(chessboard[row][col]=='r')
+                {
+                    if(rookAttack(chessboard, row, col, whiteKRow, whiteKCol, king))
+                    {
+                        attacked=true;
+                    }
+                }
+                else if(chessboard[row][col]=='q')
+                {
+                    if(rookAttack(chessboard, row, col, whiteKRow, whiteKCol, king) || bishopAttack(chessboard, row, col, whiteKRow, whiteKCol, king))
+                    {
+                        attacked=true;
+                    }
+                }
+            }
+        }
+    }
+    return attacked;
+}
+bool checkForBlackKing(char chessboard[9][9], int blackKRow, int blackKCol)
+{
+    int row,col;
+    char king='k';
+    bool attacked=false;
+    for(row=0; row<8; row++)
+    {
+        for(col=0;col<8;col++)
+        {
+            if(chessboard[row][col]!='.' && isupper(chessboard[row][col]))
+            {
+                if(chessboard[row][col]=='P')
+                {
+                    if(pawnAttack(chessboard, row, col, blackKRow, blackKCol, king))
+                    {
+                        attacked=true;
+                    }
+                }
+                else if(chessboard[row][col]=='N')
+                {
+                    if(knightAttack(chessboard, row, col, blackKRow, blackKCol, king))
+                    {
+                        attacked=true;
+                    }
+                }
+                else if(chessboard[row][col]=='B')
+                {
+                    if(bishopAttack(chessboard, row, col, blackKRow, blackKCol, king))
+                    {
+                        attacked=true;
+                    }
+                }
+                else if(chessboard[row][col]=='R')
+                {
+                    if(rookAttack(chessboard, row, col, blackKRow, blackKCol, king))
+                    {
+                        attacked=true;
+                    }
+                }
+                else if(chessboard[row][col]=='Q')
+                {
+                    if(rookAttack(chessboard, row, col, blackKRow, blackKCol, king) || bishopAttack(chessboard, row, col, blackKRow, blackKCol, king))
+                    {
+                        attacked=true;
+                    }
+                }
+            }
+        }
+    }
+    return attacked;
+}
+
+void check(char chessboard[9][9], int board, int whiteKRow, int whiteKCol, int blackKRow, int blackKCol)
+{
+    if(!checkforalldots(chessboard))
+    {
+        if(checkForWhiteKing(chessboard, whiteKRow, whiteKCol))
+        {
+            printf("Game #%d: white king is in check.\n", board);
+        }
+        else if(checkForBlackKing(chessboard, blackKRow, blackKCol))
+        {
+            printf("Game #%d: black king is in check.\n", board);
+        }
+        else
+        {
+            printf("Game #%d: no king is in check.\n", board);
+        }
+    }
+}
+
+
+int main()
+{
+    bool mainflag= true;
+    char piece;
+    int row,col, whiteKRow, whiteKCol, blackKRow, blackKCol;
+    char chessboard[9][9];
+    int board=0;
+    while(mainflag)
+    {
+        bool boardflag=false;
+        for(row=0; row<8; row++)
+        {
+            for(col=0; col<8; col++)
+            {
+                cin>>chessboard[row][col];
+                piece=chessboard[row][col];
+                if(piece!='.')
+                {
+                    boardflag=true;
+                }
+                if(piece=='K')
+                {
+                    whiteKRow=row;
+                    whiteKCol=col;
+                }
+                if(piece=='k')
+                {
+                    blackKRow=row;
+                    blackKCol=col;
+                }
+            }
+        }
+        check(chessboard, ++board, whiteKRow, whiteKCol, blackKRow, blackKCol);
+        if(boardflag==false)
+        {
+            mainflag=false;
+        }
+    }
+    return 0;
+}
